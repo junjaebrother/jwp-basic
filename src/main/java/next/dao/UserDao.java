@@ -12,35 +12,26 @@ public class UserDao {
     public void insert(User user) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-        PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(1, user.getUserId());
-                pstmt.setString(2, user.getPassword());
-                pstmt.setString(3, user.getName());
-                pstmt.setString(4, user.getEmail());
-            }
-        };
-
-        jdbcTemplate.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", preparedStatementSetter);
+        jdbcTemplate.update(
+                "INSERT INTO USERS VALUES (?, ?, ?, ?)",
+                user.getUserId(),
+                user.getPassword(),
+                user.getName(),
+                user.getEmail()
+        );
     }
 
-    public void update(User user) throws SQLException {
+    public void update(User user){
         // TODO 구현 필요함.
         JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
-
-        PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(4, user.getUserId());
-                pstmt.setString(1, user.getPassword());
-                pstmt.setString(2, user.getName());
-                pstmt.setString(3, user.getEmail());
-            }
-        };
-
-        jdbcTemplate.update("UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?", preparedStatementSetter);
+        jdbcTemplate.update(
+                "UPDATE USERS SET password = ?, name = ?, email = ? WHERE userId = ?",
+                user.getPassword(),
+                user.getName(),
+                user.getEmail(),
+                user.getUserId()
+        );
     }
 
 
@@ -48,14 +39,6 @@ public class UserDao {
         // TODO 구현 필요함.
 
         JdbcTemplate selectJdbcTemplate = new JdbcTemplate();
-
-
-        PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
-
-            }
-        };
 
         RowMapper<User> rowMapper = new RowMapper<User>() {
             @Override
@@ -68,9 +51,8 @@ public class UserDao {
             }
         };
 
-        List users = selectJdbcTemplate.query(
+        List<User> users = selectJdbcTemplate.query(
                 "SELECT userId, password, name, email FROM USERS",
-                preparedStatementSetter,
                 rowMapper);
 
         return users;
@@ -98,12 +80,12 @@ public class UserDao {
             }
         };
 
-        List users = selectJdbcTemplate.query(
+        List<User> users = selectJdbcTemplate.query(
                 "SELECT userId, password, name, email FROM USERS WHERE userid=?",
-                preparedStatementSetter,
-                rowMapper
+                rowMapper,
+                userId
         );
 
-        return (User) users.get(0);
+        return users.get(0);
     }
 }

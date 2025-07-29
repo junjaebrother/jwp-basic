@@ -11,13 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcTemplate {
-    public List query(String sql, PreparedStatementSetter preSet, RowMapper rowMapper) throws DataAccessException {
+    public <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... parameter) throws DataAccessException {
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql);
              ){
-            preSet.values(pstmt);
+            for(int i = 0; i < parameter.length; i++) {
+                pstmt.setObject(i+1, parameter[i]);
+            }
             try (ResultSet rs = pstmt.executeQuery()){
-                List<Object> users = new ArrayList<>();
+                List<T> users = new ArrayList<>();
 
                 while(rs.next()) {
                     users.add(rowMapper.mapRow(rs));
@@ -29,13 +31,16 @@ public class JdbcTemplate {
         }
     }
 
-    public void update(String sql, PreparedStatementSetter preSet) throws DataAccessException {
+    public void update(String sql, Object... parameters) throws DataAccessException {
         try (Connection con = ConnectionManager.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql)) {
-            preSet.values(pstmt);
+            for (int i = 0; i < parameters.length; i++) {
+                pstmt.setObject(i+1, parameters[i]);
+            }
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException(e);
         }
     }
+
 }
