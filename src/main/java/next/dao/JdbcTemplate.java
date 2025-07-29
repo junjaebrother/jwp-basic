@@ -7,15 +7,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public abstract class UpdateJdbcTemplate {
+public abstract class JdbcTemplate {
+
     public void update(User user) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = createQueryForUpdate();
+            String sql = createQuery();
             pstmt = con.prepareStatement(sql);
-            setValuesForUpdate(user, pstmt);
+            setValues(user, pstmt);
 
             pstmt.executeUpdate();
         }finally {
@@ -29,11 +30,8 @@ public abstract class UpdateJdbcTemplate {
         }
     }
 
-    abstract void setValuesForUpdate(User user, PreparedStatement pstmt) throws SQLException;
 
+    abstract void setValues(User user, PreparedStatement pstmt) throws SQLException;
 
-
-    abstract String createQueryForUpdate();
-
-
+    abstract String createQuery();
 }
