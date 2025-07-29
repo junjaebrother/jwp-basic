@@ -57,9 +57,9 @@ public class UserDao {
             }
         };
 
-        RowMapper rowMapper = new RowMapper() {
+        RowMapper<User> rowMapper = new RowMapper<User>() {
             @Override
-            public Object mapRow(ResultSet rs) throws SQLException {
+            public User mapRow(ResultSet rs) throws SQLException {
                 return new User(
                         rs.getString("userId"),
                         rs.getString("password"),
@@ -86,9 +86,9 @@ public class UserDao {
             }
         };
 
-        RowMapper rowMapper = new RowMapper() {
+        RowMapper<User> rowMapper = new RowMapper<User>() {
             @Override
-            public Object mapRow(ResultSet rs) throws SQLException {
+            public User mapRow(ResultSet rs) throws SQLException {
                 return new User(
                         rs.getString("userId"),
                         rs.getString("password"),
