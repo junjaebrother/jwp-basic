@@ -35,54 +35,38 @@ public class UserDao {
     }
 
 
-    public List<User> findAll() throws SQLException {
+    public List<User> findAll() {
         // TODO 구현 필요함.
 
         JdbcTemplate selectJdbcTemplate = new JdbcTemplate();
 
-        RowMapper<User> rowMapper = new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs) throws SQLException {
-                return new User(
-                        rs.getString("userId"),
-                        rs.getString("password"),
-                        rs.getString("name"),
-                        rs.getString("email"));
-            }
-        };
-
         List<User> users = selectJdbcTemplate.query(
                 "SELECT userId, password, name, email FROM USERS",
-                rowMapper);
-
-        return users;
-    }
-
-    public User findByUserId(String userId) throws SQLException {
-        JdbcTemplate selectJdbcTemplate = new JdbcTemplate();
-
-        PreparedStatementSetter preparedStatementSetter = new PreparedStatementSetter() {
-            @Override
-            public void values(PreparedStatement pstmt) throws SQLException {
-                pstmt.setString(1, userId);
-            }
-        };
-
-        RowMapper<User> rowMapper = new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs) throws SQLException {
-                return new User(
+                (ResultSet rs) -> {
+                    return new User(
                         rs.getString("userId"),
                         rs.getString("password"),
                         rs.getString("name"),
                         rs.getString("email")
-                );
-            }
-        };
+                    );
+                });
+
+        return users;
+    }
+
+    public User findByUserId(String userId) {
+        JdbcTemplate selectJdbcTemplate = new JdbcTemplate();
 
         List<User> users = selectJdbcTemplate.query(
                 "SELECT userId, password, name, email FROM USERS WHERE userid=?",
-                rowMapper,
+                (ResultSet rs) -> {
+                    return new User(
+                            rs.getString("userId"),
+                            rs.getString("password"),
+                            rs.getString("name"),
+                            rs.getString("email")
+                    );
+                },
                 userId
         );
 
