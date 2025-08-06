@@ -12,4 +12,6 @@
 * JspView를 반환하게 되고 이것을 home.jsp에 전달해 자바로서 HTML파일을 생성하고 클라이언트에게 보여준다.
 
 #### 7. next.web.qna package의 ShowController는 멀티 쓰레드 상황에서 문제가 발생하는 이유에 대해 설명하라.
-* 
+* ShowController는 Answer, Question과 같은 각 스레드가 다른 값을 가져야하는 값을 인스턴스에 등록해 힙영역에서 사용되고있다.
+* 결국 Question과 같은 변수들은 다른 스레드가 요청을 하여 ShowController의 상태값이 바뀌면 다른 값을 호출해오는 상황 발생.
+* 따라서 이러한 스레드별로 관리되어야 할 변수들은 메서드 안에 로컬 변수로 선언하여 관리해야 한다!
