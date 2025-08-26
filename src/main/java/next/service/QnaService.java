@@ -3,8 +3,8 @@ package next.service;
 import java.util.List;
 
 import next.CannotDeleteException;
-import next.dao.AnswerDao;
-import next.dao.QuestionDao;
+import next.dao.JdbcAnswerDao;
+import next.dao.JdbcQuestionDao;
 import next.model.Answer;
 import next.model.Question;
 import next.model.User;
@@ -12,15 +12,17 @@ import next.model.User;
 public class QnaService {
     private static QnaService qnaService;
 
-    private QuestionDao questionDao = QuestionDao.getInstance();
-    private AnswerDao answerDao = AnswerDao.getInstance();
+    private JdbcQuestionDao questionDao;
+    private JdbcAnswerDao answerDao;
 
-    private QnaService() {
+    private QnaService(JdbcQuestionDao questionDao, JdbcAnswerDao answerDao) {
+        this.answerDao = answerDao;
+        this.questionDao = questionDao;
     }
 
-    public static QnaService getInstance() {
+    public static QnaService getInstance(JdbcQuestionDao questionDao, JdbcAnswerDao answerDao) {
         if (qnaService == null) {
-            qnaService = new QnaService();
+            qnaService = new QnaService(questionDao, answerDao);
         }
         return qnaService;
     }

@@ -4,13 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import next.controller.UserSessionUtils;
-import next.dao.QuestionDao;
+import next.dao.JdbcQuestionDao;
 import next.model.Question;
 import core.mvc.AbstractController;
 import core.mvc.ModelAndView;
 
 public class UpdateFormQuestionController extends AbstractController {
-    private QuestionDao questionDao = QuestionDao.getInstance();
+    private JdbcQuestionDao questionDao = JdbcQuestionDao.getInstance();
 
     @Override
     public ModelAndView execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {

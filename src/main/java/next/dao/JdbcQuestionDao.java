@@ -13,16 +13,16 @@ import core.jdbc.KeyHolder;
 import core.jdbc.PreparedStatementCreator;
 import core.jdbc.RowMapper;
 
-public class QuestionDao {
-    private static QuestionDao questionDao;
+public class JdbcQuestionDao {
+    private static JdbcQuestionDao questionDao;
     private JdbcTemplate jdbcTemplate = JdbcTemplate.getInstance();
 
-    private QuestionDao() {
+    private JdbcQuestionDao() {
     }
 
-    public static QuestionDao getInstance() {
+    public static JdbcQuestionDao getInstance() {
         if (questionDao == null) {
-            questionDao = new QuestionDao();
+            questionDao = new JdbcQuestionDao();
         }
         return questionDao;
     }
