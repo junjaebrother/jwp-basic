@@ -2,6 +2,7 @@ package core.di.factory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -52,5 +53,9 @@ public class BeanFactoryUtils {
 
     public static Set<Field> getInjectedFields(Class<?> clazz) {
         return getAllFields(clazz, withAnnotation(Inject.class));
+    }
+
+    public static Set<Method> getInjectedMethods(Class<?> clazz) {
+        return getAllMethods(clazz, withAnnotation(Inject.class), withReturnType(void.class));
     }
 }

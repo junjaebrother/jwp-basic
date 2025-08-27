@@ -89,4 +89,8 @@ public class BeanFactory {
         }
         return controllers;
     }
+
+    public void registerBean(Class<?> clazz, Object bean) {
+        beans.put(clazz, bean);
+    }
 }
