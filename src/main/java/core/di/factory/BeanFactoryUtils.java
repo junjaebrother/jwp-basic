@@ -1,14 +1,14 @@
 package core.di.factory;
 
-import static org.reflections.ReflectionUtils.getAllConstructors;
-import static org.reflections.ReflectionUtils.withAnnotation;
-
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
 
 import core.annotation.Inject;
+
+import static org.reflections.ReflectionUtils.*;
 
 public class BeanFactoryUtils {
     /**
@@ -48,5 +48,9 @@ public class BeanFactoryUtils {
         }
 
         throw new IllegalStateException(injectedClazz + "인터페이스를 구현하는 Bean이 존재하지 않는다.");
+    }
+
+    public static Set<Field> getInjectedFields(Class<?> clazz) {
+        return getAllFields(clazz, withAnnotation(Inject.class));
     }
 }
