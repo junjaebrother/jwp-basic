@@ -2,8 +2,10 @@ package core.di.factory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -37,8 +39,15 @@ public class BeanFactory implements BeanDefinitionRegistry {
             return (T) bean;
         }
 
+        BeanDefinition beanDefinition = beanDefinitions.get(clazz);
+        if(beanDefinition != null && beanDefinition instanceof AnnotatedBeanDefinition) {
+            bean = createAnnotatedBean(beanDefinition);
+            beans.put(clazz, bean);
+            return (T)bean;
+        }
+
         Class<?> concreteClass = findConcreteClass(clazz);
-        BeanDefinition beanDefinition = beanDefinitions.get(concreteClass);
+        beanDefinition = beanDefinitions.get(concreteClass);
         bean = inject(beanDefinition);
         beans.put(concreteClass, bean);
         return (T) bean;
@@ -51,6 +60,25 @@ public class BeanFactory implements BeanDefinitionRegistry {
             throw new IllegalStateException(clazz + "는 Bean이 아니다.");
         }
         return concreteClazz;
+    }
+
+    private Optional<Object> createAnnotatedBean(BeanDefinition beanDefinition) {
+        AnnotatedBeanDefinition abd = (AnnotatedBeanDefinition) beanDefinition;
+        Method method = abd.getMethod();
+        Object[] args = populateArguments(method.getParameterTypes());
+        return BeanFactoryUtils.invokeMethod(method, getBean(method.getDeclaringClass()), args);
+    }
+
+    private Object[] populateArguments(Class<?>[] paramTypes) {
+        List<Object> args = Lists.newArrayList();
+        for (Class<?> param : paramTypes) {
+            Object bean = getBean(param);
+            if (bean == null) {
+                throw new NullPointerException(param + "에 해당하는 Bean이 존재하지 않습니다.");
+            }
+            args.add(getBean(param));
+        }
+        return args.toArray();
     }
 
     private Object inject(BeanDefinition beanDefinition) {
